@@ -1,8 +1,12 @@
 <template>
   <h1>Game of life</h1>
+
+  <button @click="setDimensions(10)">10x10</button>
+  <button @click="setDimensions(20)">20x20</button>
+  <button @click="setDimensions(50)">50x50</button>
+  <button @click="setDimensions(100)">100x100</button>
+
   <form class="options" @submit.prevent="setGrid">
-    Width: <input class="number-input" type="number"  v-model="width" /> 
-    <br>Height: <input class="number-input" type="number" v-model="height"/> 
     <br>Probability: <input type="number" min="0" max="1" step="0.1" v-model="probability"/>
     <br><button>Play!</button>
   </form>
@@ -17,7 +21,6 @@
 </template>
 
 <script>
-let id = 0;
 export default {
   name: 'App',
   components: {
@@ -25,22 +28,23 @@ export default {
 
   data() {
     return{
-      width: 0,
-      height: 0, 
+      size: 0,
       probability: 0.0,
       cells: []
     }
   },
 
   methods:{
+    setDimensions(size){
+      this.size = size
+    },
     setGrid() {
       this.cells = []
-      id = 0
-      for(let i=0; i<this.height; i++){
+      for(let i=0; i<this.size; i++){
         this.cells[i] = []
-        for (let j = 0; j < this.width; j++) {
-          if(this.randomNumber() > (this.probability)*10) this.cells[i][j]={ id: id++, alive: false }
-          else this.cells[i][j]={ id: id++, alive: true }
+        for (let j = 0; j < this.size; j++) {
+          if(this.randomNumber() > (this.probability)*10) this.cells[i][j]={ alive: false }
+          else this.cells[i][j]={ alive: true }
         }
       }
 
@@ -49,7 +53,6 @@ export default {
       this.cells[i][j].alive = !cell.alive
       console.log(cell)
     },
-    
     randomNumber() {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
     }
@@ -65,28 +68,25 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 3em;
+  margin-top: 3rem;
 }
 
 .number-input, button{
-  margin: 0.25em
+  margin: 1rem 0.25rem;
 }
 
 .cell {
-  border-style:solid;
-  padding: 0.25em;
+  padding: 0.26rem;
 }
-
-/* .cell:hover {
-  background-color: gray ;
-} */
 
 .alive {
   background-color: black !important;
 }
 
 .dead {
+  border-style:solid;
   background-color: white ;
+  border-width: 1px;
 }
 
 table {

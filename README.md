@@ -1,4 +1,3 @@
-# game_of_life
 
 ## Project setup
 ```
@@ -6,19 +5,14 @@ npm install
 ```
 
 ### Compiles and hot-reloads for development
-```
+#### Frontend.  Run the following command:
+``` 
+npm install
 npm run serve
 ```
-
-### Compiles and minifies for production
+#### Backend: Open another terminal and run the following command:
 ```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+cd go
+go r serve
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

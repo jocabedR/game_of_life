@@ -21,6 +21,9 @@
 </template>
 
 <script>
+
+import axios from 'axios'
+
 export default {
   name: 'App',
   components: {
@@ -55,7 +58,8 @@ export default {
           } 
         }
       }
-      console.log(this.cells)
+      //console.log(this.cells)
+      this.postreq()
     },
     changeState(cell, i,j) {
       this.cells[i][j] = !cell
@@ -65,6 +69,22 @@ export default {
     },
     randomNumber() {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
+    },
+    postreq: function() {
+      var data = {"grid": this.cells}
+      /*eslint-disable*/
+      console.log(data) 
+
+      axios({ method: "POST", url: "http://127.0.0.1:3000/game", data: data, headers: {"content-type": "text/plain" } }).then(result => { 
+          // this.response = result.data;
+          /*eslint-disable*/
+          console.log(result.data) 
+          /*eslint-enable*/
+        }).catch( error => {
+            /*eslint-disable*/
+            console.error(error);
+            /*eslint-enable*/
+      });
     }
 
   }

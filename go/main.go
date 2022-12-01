@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -13,7 +15,7 @@ func main() {
 	r.HandleFunc("/game", HandleGame).Methods(http.MethodPost)
 
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":3000",
 		Handler: r,
 	}
 
@@ -25,17 +27,32 @@ func main() {
 }
 
 func HandleGame(w http.ResponseWriter, r *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	var human Bio
-	err := json.NewDecoder(request.Body).Decode(&human)
+	/* w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var grid [][]bool
+	err := json.NewDecoder(r.Body).Decode(&grid)
 	if err != nil {
-		log.Fatalln("There was an error decoding the request body into the struct")
+		log.Fatalln("There was an error decoding the request body.")
 	}
-	BioData = append(BioData, human)
-	err = json.NewEncoder(writer).Encode(&human)
-	if err != nil {
-		log.Fatalln("There was an error encoding the initialized struct")
+
+	print(grid) */
+
+	decoder := json.NewDecoder(r.Body)
+
+	var grid [][]bool
+	var gridResponse [][]bool
+
+	decoder.Decode(&grid)
+
+	gridResponse = aplyRules(grid)
+
+	fmt.Println(gridResponse)
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(gridResponse); err != nil {
+		panic(err)
 	}
 
 }

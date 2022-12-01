@@ -1,9 +1,6 @@
 
 ## Project setup
 ```
-npm install
-```
-
 ### Compiles and hot-reloads for development
 #### Frontend.  Run the following command:
 ``` 

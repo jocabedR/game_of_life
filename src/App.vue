@@ -14,7 +14,7 @@
   <table>
     <tr v-for="(row, rowKey) in cells" :key="rowKey">
       <td v-for="(col, colKey) in row" :key="colKey" 
-      :class="col.alive ? 'alive' : 'dead'" class="cell"
+      :class="col ? 'alive' : 'dead'" class="cell"
       ></td>
     </tr>
   </table>
@@ -30,7 +30,8 @@ export default {
     return{
       size: 0,
       probability: 0.0,
-      cells: []
+      cells: [],
+      //grid: []
     }
   },
 
@@ -40,18 +41,27 @@ export default {
     },
     setGrid() {
       this.cells = []
+      // this.grid = []
       for(let i=0; i<this.size; i++){
         this.cells[i] = []
         for (let j = 0; j < this.size; j++) {
-          if(this.randomNumber() > (this.probability)*10) this.cells[i][j]={ alive: false }
-          else this.cells[i][j]={ alive: true }
+          if(this.randomNumber() > (this.probability)*10){
+            this.cells[i][j] = false 
+            //this.grid[i][j]= "_"
+          } 
+          else{
+            this.cells[i][j] = true
+            // this.grid[i][j]= "*"
+          } 
         }
       }
-
+      console.log(this.cells)
     },
     changeState(cell, i,j) {
-      this.cells[i][j].alive = !cell.alive
-      console.log(cell)
+      this.cells[i][j] = !cell
+      //if (this.grid)
+      //else 
+      //console.log(cell)
     },
     randomNumber() {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
@@ -80,7 +90,9 @@ export default {
 }
 
 .alive {
-  background-color: black !important;
+  border-style:solid;
+  background-color: black ;
+  border-width: 1px;
 }
 
 .dead {

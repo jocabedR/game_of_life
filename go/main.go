@@ -9,6 +9,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type Grid struct {
+	grid [][]bool `json:"grid"`
+}
+
 func main() {
 	r := mux.NewRouter()
 
@@ -21,32 +25,42 @@ func main() {
 
 	log.Println("Listening at port " + srv.Addr)
 	srv.ListenAndServe()
-
-	//grid = aplyRules(grid)
-
 }
 
 func HandleGame(w http.ResponseWriter, r *http.Request) {
-	/* w.Header().Set("Content-Type", "application/json")
+	/* var res map[string]interface{}
+
+	json.NewDecoder(r.Body).Decode(&res)
+
+	grid := res["grid"]
+
+	fmt.Println(grid)
+
+	//gridResponse := aplyRules(grid)
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
-	var grid [][]bool
-	err := json.NewDecoder(r.Body).Decode(&grid)
-	if err != nil {
-		log.Fatalln("There was an error decoding the request body.")
+	if err := json.NewEncoder(w).Encode("holis"); err != nil {
+		panic(err)
+	}
+	*/
+	var input Grid
+
+	body := json.NewDecoder(r.Body)
+	if err := body.Decode(&input); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	print(grid) */
+	g := &Grid{
+		grid: input.grid,
+	}
 
-	decoder := json.NewDecoder(r.Body)
+	fmt.Print(g.grid)
 
-	var grid [][]bool
-	var gridResponse [][]bool
+	gridResponse := aplyRules(g.grid)
 
-	decoder.Decode(&grid)
-
-	gridResponse = aplyRules(grid)
-
-	fmt.Println(gridResponse)
+	//fmt.Print(gridResponse)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -54,7 +68,6 @@ func HandleGame(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(gridResponse); err != nil {
 		panic(err)
 	}
-
 }
 
 func aplyRules(grid [][]bool) [][]bool {
@@ -98,12 +111,4 @@ func liveNeighbors(x, y int, grid [][]bool) int {
 		}
 	}
 	return count
-}
-
-func limit(cor, lim int) int {
-	if cor >= 0 && cor < lim {
-		return 0
-	} else {
-		return 1
-	}
 }

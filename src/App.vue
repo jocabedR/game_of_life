@@ -12,7 +12,7 @@
   </form>
   
   <table>
-    <tr v-for="(row, rowKey) in cells" :key="rowKey">
+    <tr v-for="(row, rowKey) in grid" :key="rowKey">
       <td v-for="(col, colKey) in row" :key="colKey" 
       :class="col ? 'alive' : 'dead'" class="cell"
       ></td>
@@ -33,8 +33,7 @@ export default {
     return{
       size: 0,
       probability: 0.0,
-      cells: [],
-      //grid: []
+      grid: [],
     }
   },
 
@@ -43,50 +42,38 @@ export default {
       this.size = size
     },
     setGrid() {
-      this.cells = []
-      // this.grid = []
+      this.grid = []
       for(let i=0; i<this.size; i++){
-        this.cells[i] = []
+        this.grid[i] = []
         for (let j = 0; j < this.size; j++) {
           if(this.randomNumber() > (this.probability)*10){
-            this.cells[i][j] = false 
-            //this.grid[i][j]= "_"
+            this.grid[i][j] = false 
           } 
           else{
-            this.cells[i][j] = true
-            // this.grid[i][j]= "*"
+            this.grid[i][j] = true
           } 
         }
       }
-      //console.log(this.cells)
       this.postreq()
     },
     changeState(cell, i,j) {
-      this.cells[i][j] = !cell
-      //if (this.grid)
-      //else 
-      //console.log(cell)
+      this.grid[i][j] = !cell
     },
     randomNumber() {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
     },
     postreq: function() {
-      var data = {"grid": this.cells}
-      /*eslint-disable*/
+      var data = {"grid": this.grid}
+      
       console.log(data) 
+      
 
       axios({ method: "POST", url: "http://127.0.0.1:3000/game", data: data, headers: {"content-type": "text/plain" } }).then(result => { 
-          // this.response = result.data;
-          /*eslint-disable*/
           console.log(result.data) 
-          /*eslint-enable*/
         }).catch( error => {
-            /*eslint-disable*/
             console.error(error);
-            /*eslint-enable*/
       });
     }
-
   }
 }
 </script>

@@ -11,22 +11,20 @@
     <br><button>Play!</button>
   </form>
   
-  <table>
-    <tr v-for="(row, rowKey) in grid" :key="rowKey">
-      <td v-for="(col, colKey) in row" :key="colKey" 
-      :class="col ? 'alive' : 'dead'" class="cell"
-      ></td>
-    </tr>
-  </table>
+  <Grid :grid="grid"/>
+  <!-- <HelloWorldVue/> -->
+
 </template>
 
 <script>
-
 import axios from 'axios'
+import Grid from './components/Grid.vue'
+//import HelloWorldVue from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
   components: {
+    Grid
   },
 
   data() {
@@ -56,60 +54,41 @@ export default {
       }
       this.postreq()
     },
-    changeState(cell, i,j) {
-      this.grid[i][j] = !cell
-    },
     randomNumber() {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
     },
+
     postreq: function() {
       var data = {"grid": this.grid}
-      
-      console.log(data) 
-      
 
+      console.log(this.data)
+      
       axios({ method: "POST", url: "http://127.0.0.1:3000/game", data: data, headers: {"content-type": "text/plain" } }).then(result => { 
-          console.log(result.data) 
+          //console.log(result.data)
+
+          this.grid = result.data
+
+          console.log(this.grid)
+
         }).catch( error => {
             console.error(error);
       });
-    }
+    } 
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 3rem;
-}
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 3rem;
+  }
 
-.number-input, button{
-  margin: 1rem 0.25rem;
-}
-
-.cell {
-  padding: 0.26rem;
-}
-
-.alive {
-  border-style:solid;
-  background-color: black ;
-  border-width: 1px;
-}
-
-.dead {
-  border-style:solid;
-  background-color: white ;
-  border-width: 1px;
-}
-
-table {
-  margin: auto;
-}
-
+  .number-input, button{
+    margin: 1rem 0.25rem;
+  }
 </style>

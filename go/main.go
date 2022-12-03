@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,7 +9,7 @@ import (
 )
 
 type Grid struct {
-	grid [][]bool `json:"grid"`
+	Grid [][]bool `json:"grid"`
 }
 
 func main() {
@@ -28,23 +27,6 @@ func main() {
 }
 
 func HandleGame(w http.ResponseWriter, r *http.Request) {
-	/* var res map[string]interface{}
-
-	json.NewDecoder(r.Body).Decode(&res)
-
-	grid := res["grid"]
-
-	fmt.Println(grid)
-
-	//gridResponse := aplyRules(grid)
-
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode("holis"); err != nil {
-		panic(err)
-	}
-	*/
 	var input Grid
 
 	body := json.NewDecoder(r.Body)
@@ -52,15 +34,8 @@ func HandleGame(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	g := &Grid{
-		grid: input.grid,
-	}
-
-	fmt.Print(g.grid)
-
-	gridResponse := aplyRules(g.grid)
-
-	//fmt.Print(gridResponse)
+	grid := input.Grid
+	gridResponse := aplyRules(grid)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -84,16 +59,17 @@ func aplyRules(grid [][]bool) [][]bool {
 				if live_neighbors == 3 {
 					for z := i - 1; z <= i+1; z++ {
 						for y := i - 1; y <= j+1; y++ {
-							grid[z][y] = false
+							if z >= 0 && y >= 0 {
+								if z < len(grid) && y < len(grid) {
+									grid[z][y] = false
+								}
+							}
 						}
 					}
 					grid[i][j] = true
 				}
 			}
-
-			fmt.Print(grid[i][j], " ")
 		}
-		fmt.Println()
 	}
 	return grid
 }

@@ -8,18 +8,21 @@
 
   <form class="options" @submit.prevent="setGrid">
     <br>Probability: <input type="number" min="0" max="1" step="0.1" v-model="probability"/>
-    <br><button>Play!</button>
+    <br><button>Generate a seed!</button>
   </form>
+
+  <button @click="playOrStop">{{play_stop}}</button>
   
   <Grid :grid="grid"/>
-  <!-- <HelloWorldVue/> -->
 
 </template>
 
 <script>
 import axios from 'axios'
 import Grid from './components/Grid.vue'
-//import HelloWorldVue from './components/HelloWorld.vue'
+
+var n = 0
+var state
 
 export default {
   name: 'App',
@@ -32,6 +35,7 @@ export default {
       size: 0,
       probability: 0.0,
       grid: [],
+      play_stop: "Play"
     }
   },
 
@@ -39,41 +43,50 @@ export default {
     setDimensions(size){
       this.size = size
     },
+
     setGrid() {
-      this.grid = []
-      for(let i=0; i<this.size; i++){
-        this.grid[i] = []
-        for (let j = 0; j < this.size; j++) {
-          if(this.randomNumber() > (this.probability)*10){
-            this.grid[i][j] = false 
-          } 
-          else{
-            this.grid[i][j] = true
-          } 
+      if (this.size == 0 || this.probability == 0.0 ) {
+        alert('Please chose any size and/or set the probabiliy.')
+      } else {
+        //this.grid = []
+        for(let i=0; i<this.size; i++){
+          this.grid[i] = []
+          for (let j = 0; j < this.size; j++) {
+            if(this.randomNumber() > (this.probability)*10){
+              this.grid[i][j] = false 
+            } 
+            else{
+              this.grid[i][j] = true
+            } 
+          }
         }
       }
-      this.postreq()
     },
+
     randomNumber() {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
     },
 
     postreq: function() {
       var data = {"grid": this.grid}
-
-      console.log(this.data)
-      
       axios({ method: "POST", url: "http://127.0.0.1:3000/game", data: data, headers: {"content-type": "text/plain" } }).then(result => { 
-          //console.log(result.data)
-
           this.grid = result.data
-
-          console.log(this.grid)
-
         }).catch( error => {
             console.error(error);
       });
-    } 
+      
+    },
+
+    playOrStop() {
+      if(this.play_stop == "Play"){
+        this.play_stop = "Stop"
+        state = setInterval(this.postreq, 100);
+      } else {
+        this.play_stop = "Play"
+        clearInterval(state)
+      }
+    },
+
   }
 }
 </script>
@@ -89,6 +102,6 @@ export default {
   }
 
   .number-input, button{
-    margin: 1rem 0.25rem;
+    margin: 0.5rem 0.25rem;
   }
 </style>

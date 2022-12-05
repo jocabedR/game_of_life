@@ -18,10 +18,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Grid from './components/Grid.vue'
 
-var n = 0
 var state
 
 export default {
@@ -35,7 +33,7 @@ export default {
       size: 0,
       probability: 0.0,
       grid: [],
-      play_stop: "Play"
+      play_stop: "Play!",
     }
   },
 
@@ -66,29 +64,52 @@ export default {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1
     },
 
-    postreq: function() {
-      var data = {"grid": this.grid}
-      axios({ method: "POST", url: "http://127.0.0.1:3000/game", data: data, headers: {"content-type": "text/plain" } }).then(result => { 
-          this.grid = result.data
-        }).catch( error => {
-            console.error(error);
-      });
-      
-    },
-
     playOrStop() {
       if (this.size == []) {
         alert('Please chose generate a seed.')
       } else {
         if(this.play_stop == "Play!"){
           this.play_stop = "Stop"
-          state = setInterval(this.postreq, 100);
+          state = setInterval(this.aplyRules, 100);
         } else {
           this.play_stop = "Play!"
           clearInterval(state)
         }
       }
     },
+
+    aplyRules() {
+      for (let i = 0; i < this.grid.length; i++) {
+        for (let j = 0; j < this.grid.length; j++) {
+          
+          let live_neighbors = this.liveNeighbors(j, i)
+          
+          if ((this.grid[i][j]) && (live_neighbors < 2))
+            this.grid[i][j] = false
+
+          else if ((this.grid[i][j]) && (live_neighbors > 3))
+            this.grid[i][j] = false
+
+          else if ((!this.grid[i][j]) && (live_neighbors == 3))
+            this.grid[i][j] = true
+        }
+      }
+    },
+
+    liveNeighbors(x, y){
+      let count = 0
+      for (let i = y - 1; i <= y+1; i++) {
+        for (let j = x - 1; j <= x+1; j++) {
+          if ((i == y && j == x) || (i < 0 || j < 0) || (i >= this.grid.length || j >= this.grid.length) ){
+            continue
+          }
+          if (this.grid[i][j]){
+            count++
+          }
+        }
+      }
+      return count
+    }
 
   }
 }

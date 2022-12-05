@@ -1,7 +1,10 @@
 <script>
 export default {
   props: {
-    grid: []
+    grid: {
+      type: Array,
+      default: []
+    }
   }
 }
 </script>

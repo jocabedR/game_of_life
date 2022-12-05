@@ -48,7 +48,6 @@ export default {
       if (this.size == 0 || this.probability == 0.0 ) {
         alert('Please chose any size and/or set the probabiliy.')
       } else {
-        //this.grid = []
         for(let i=0; i<this.size; i++){
           this.grid[i] = []
           for (let j = 0; j < this.size; j++) {
@@ -78,12 +77,16 @@ export default {
     },
 
     playOrStop() {
-      if(this.play_stop == "Play"){
-        this.play_stop = "Stop"
-        state = setInterval(this.postreq, 100);
+      if (this.size == []) {
+        alert('Please chose generate a seed.')
       } else {
-        this.play_stop = "Play"
-        clearInterval(state)
+        if(this.play_stop == "Play!"){
+          this.play_stop = "Stop"
+          state = setInterval(this.postreq, 100);
+        } else {
+          this.play_stop = "Play!"
+          clearInterval(state)
+        }
       }
     },
 

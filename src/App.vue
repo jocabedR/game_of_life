@@ -43,6 +43,7 @@ export default {
     },
 
     setGrid() {
+      this.grid = []
       if (this.size == 0 || this.probability == 0.0 ) {
         alert('Please chose any size and/or set the probabiliy.')
       } else {

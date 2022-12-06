@@ -80,33 +80,38 @@ export default {
     },
 
     aplyRules() {
+      let next = []
       for (let i = 0; i < this.grid.length; i++) {
+        next[i] = []
         for (let j = 0; j < this.grid.length; j++) {
-          
           let live_neighbors = this.liveNeighbors(j, i)
-          
+
           if ((this.grid[i][j]) && (live_neighbors < 2))
-            this.grid[i][j] = false
-
+            next[i][j] = false
           else if ((this.grid[i][j]) && (live_neighbors > 3))
-            this.grid[i][j] = false
-
+            next[i][j] = false
           else if ((!this.grid[i][j]) && (live_neighbors == 3))
-            this.grid[i][j] = true
+            next[i][j] = true
+          else next[i][j] = this.grid[i][j]
         }
       }
+      this.grid = next
     },
 
     liveNeighbors(x, y){
-      let count = 0
+      let count = 0, i2, j2
       for (let i = y - 1; i <= y+1; i++) {
         for (let j = x - 1; j <= x+1; j++) {
-          if ((i == y && j == x) || (i < 0 || j < 0) || (i >= this.grid.length || j >= this.grid.length) ){
-            continue
-          }
-          if (this.grid[i][j]){
-            count++
-          }
+          if (i == y && j == x) continue
+          if (i < 0) i2 = this.grid.length-1
+          else if (i == this.grid.length) i2 = 0
+          else i2 = i
+            
+          if (j < 0) j2 = this.grid.length-1
+          else if (j == this.grid.length) j2 = 0
+          else j2 = j
+
+          if (this.grid[i2][j2]) count ++
         }
       }
       return count
